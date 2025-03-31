@@ -1,0 +1,52 @@
+### model
+model_name_or_path: saves/1st-stage
+enc_name_or_path: DKYoon/mt5-xl-lm-adapt
+lm_name_or_path: meta-llama/Llama-2-7b
+alignments: ffn
+enc_hidden_size: 2048
+lm_hidden_size: 4096
+add_new_lines_to_enc: True
+exp_run_name: 2nd-stage
+
+### method
+stage: lb
+do_train: true
+finetuning_type: full
+print_param_status: True
+deepspeed: examples/deepspeed/ds_z3_config.json
+
+### dataset
+dataset: 2nd-stage-data
+remove_unused_columns: False
+template: empty
+cutoff_len: 1280
+max_length_enc: 1024
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+### output
+output_dir: saves/2nd-stage
+logging_steps: 10
+save_steps: 1000
+save_total_limit: 1
+plot_loss: true
+overwrite_output_dir: true
+
+### train
+freeze_language_model: False
+freeze_encoder: True
+freeze_alignment: True
+use_lb_custom_optimizer: True
+learning_rate_alignment: 6.0e-4
+learning_rate_enc: 2.0e-5
+learning_rate_lm: 2.0e-5
+w_decay_alignment: 0.0
+w_decay_enc: 0.1
+w_decay_lm: 0.01
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 8
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+bf16: true
+ddp_timeout: 180000000
